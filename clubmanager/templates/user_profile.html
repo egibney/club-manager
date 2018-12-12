@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+  {% include 'sidebar.html' %}
+  <article class="media content-section">
+    <div class="media-body">
+      <h1 class="article-title">{{ user.first_name }}</h1>
+      <p>{{ user.clubs }}</p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Club Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for club in club_list %}
+            <tr>
+              <td>{{ club.name }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+  </div>
+{% endblock %}

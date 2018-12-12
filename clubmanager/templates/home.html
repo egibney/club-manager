@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+
+  <div class="container">
+    <h1>Clubs</h1>
+    <article class="media content-section">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Club Name</th>
+            <th scope="col"># of Members</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for club in clubs %}
+          <tr>
+            <th scope="row">{{ club.id }}</th>
+            <td><a href="{{ url_for('clubs.club', club_id=club.id) }}">{{ club.name }}</a></td>
+            <th scope="row">{{ club.members|length }}</th>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </article>
+
+{% endblock %}

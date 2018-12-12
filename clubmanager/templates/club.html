@@ -1,0 +1,113 @@
+{% extends "layout.html" %} {% block content %}
+<div class="row">
+  {% include 'sidebar.html' %}
+  <article class="media content-section">
+    <div class="media-body">
+      <h1 class="article-title">{{ club.name }}</h1>
+
+      <!--- This is where we check that status of the current user and present them buttons accordingly ---->
+      {% if active_status == True %}
+        <form action="{{ url_for('clubs.leave_club', club_id=club.id) }}" method="POST">
+          <input class="btn btn-danger" type="submit" value="Leave Club">
+        </form>
+      {% elif pending_status == True %}
+        <button class="btn btn-secondary">Pending</button>
+      {% elif active_status == False %}
+        <form action="{{ url_for('clubs.join_club', club_id=club.id) }}" method="POST">
+          <input class="btn btn-success" type="submit" value="Join Club">
+        </form>
+      {% endif %}
+      {% if admin_status == True %}
+      <p>You are an admin of this club</p>
+      {% endif %}
+
+      <!--- This is where the pending club members loop is ---->
+      {% if admin_status == True %}
+      <h3 class="article-title">Pending Club Members</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Email</th>
+            <th scope="col">Type</th>
+            <th scope="col">Profile</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+            {% if player.is_member == False %}
+            <tr>
+              <td>{{ player.member.first_name }}</td>
+              <td>{{ player.member.last_name }}</td>
+              <td>{{ player.member.email }}</td>
+              {% if player.is_admin == True %}
+                <td>Admin</td>
+              {% else %}
+                <td>Normal</td>
+              {% endif %}
+              <td><a href="{{ url_for('users.user', user_id=player.member.id) }}">View Profile</a></td>
+              <td>
+                <form action="{{ url_for('clubs.approve_member', club_id=club.id, user_id=player.member.id) }}" method="POST">
+                  <input class="btn btn-success" type="submit" value="Approve">
+                </form>
+                <form action="{{ url_for('clubs.remove_member', club_id=club.id, user_id=player.member.id) }}" method="POST">
+                  <input class="btn btn-danger" type="submit" value="Deny">
+                </form>
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+      <!--- This is where the club members loop is ---->
+      <h3 class="article-title">Club Members</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Email</th>
+            <th scope="col">Type</th>
+            <th scope="col">Profile</th>
+            {% if admin_status == True %}
+            <th scope="col">Action</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in players %}
+            {% if player.is_member == True %}
+            <tr>
+              <td>{{ player.member.first_name }}</td>
+              <td>{{ player.member.last_name }}</td>
+              <td>{{ player.member.email }}</td>
+              {% if player.is_admin == True %}
+                <td>Admin</td>
+              {% else %}
+                <td>Normal</td>
+              {% endif %}
+              <td><a href="{{ url_for('users.user', user_id=player.member.id) }}">View Profile</a></td>
+              {% if admin_status == True %}
+                <td>
+                  {% if player.is_admin == False %}
+                    <form action="{{ url_for('clubs.make_admin', club_id=club.id, user_id=player.member.id) }}" method="POST">
+                      <input class="btn btn-success" type="submit" value="Make Admin">
+                    </form>
+                  {% endif %}
+                  <form action="{{ url_for('clubs.remove_member', club_id=club.id, user_id=player.member.id) }}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Remove">
+                  </form>
+                </td>
+              {% endif %}
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+</div>
+{% endblock %}
