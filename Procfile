@@ -1,1 +1,1 @@
-web: gunicorn clubmanager:app
+web: gunicorn clubmanager:run
