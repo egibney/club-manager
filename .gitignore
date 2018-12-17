@@ -1,4 +1,4 @@
-venv
+venv/
 site.db
 __pycache__/
 .DS_Store

@@ -1,11 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
-  {% include 'sidebar.html' %}
   <article class="media content-section">
     <div class="media-body">
-      <h1 class="article-title">{{ user.first_name }}</h1>
-      <p>{{ user.clubs }}</p>
+      <h1 class="article-title">{{ user.first_name }} {{ user.last_name }}</h1>
       <table class="table">
         <thead>
           <tr>
@@ -13,9 +11,9 @@
           </tr>
         </thead>
         <tbody>
-          {% for club in club_list %}
+          {% for team in club_teams %}
             <tr>
-              <td>{{ club.name }}</td>
+              <td>{{ team.name }}</td>
             </tr>
           {% endfor %}
         </tbody>

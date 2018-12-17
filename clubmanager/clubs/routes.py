@@ -62,13 +62,14 @@ def new_club():
 def club(club_id):
     club = Club.query.get_or_404(club_id)
     players = club.members
+    teams = club.teams
     '''I want to see if the user is an admin'''
     admin_status = user_is_admin(club_id, players)
     '''I want to see if the user is in the list of members'''
     pending_status = user_is_pending(club_id, club)
     '''I want to see if the user has an approved membership'''
     active_status = user_is_member(club_id, players)
-    return render_template('club.html', club=club, players=players, active_status=active_status,
+    return render_template('club.html', club=club, players=players, teams=teams, active_status=active_status,
                         pending_status=pending_status, admin_status=admin_status)
 
 @clubs.route("/club/<int:club_id>/join", methods=['GET', 'POST'])
@@ -91,8 +92,6 @@ def leave_club(club_id):
     db.session.delete(final)
     db.session.commit()
     return redirect(url_for('clubs.club', club_id=club.id))
-
-
 
 @clubs.route("/club/<int:club_id>/user/<int:user_id>/approve_member", methods=['GET', 'POST'])
 @login_required
@@ -155,3 +154,21 @@ def remove_member(club_id, user_id):
         db.session.delete(final)
         db.session.commit()
     return redirect(url_for('clubs.club', club_id=club.id))
+
+
+@clubs.route("/club/<int:club_id>/user/<int:user_id>")
+@login_required
+def member_profile(club_id, user_id):
+    '''Load the club, user and corresponding membership object'''
+    club = Club.query.get_or_404(club_id)
+    user = User.query.get_or_404(user_id)
+    club_teams = []
+    for t in user.teams:
+        if t.club.id == club_id:
+            club_teams.append(t)
+    club_list = []
+    for c in user.clubs:
+        i = Club(id=c.club_id)
+        club_list.append(i)
+    return render_template('member_profile.html', club=club, user=user,
+        club_list=club_list, club_teams=club_teams)

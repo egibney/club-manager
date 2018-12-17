@@ -27,10 +27,12 @@ def create_app(config_class=Config):
 
     from clubmanager.users.routes import users
     from clubmanager.clubs.routes import clubs
+    from clubmanager.teams.routes import teams
     from clubmanager.main.routes import main
     from clubmanager.errors.handlers import errors
     app.register_blueprint(users)
     app.register_blueprint(clubs)
+    app.register_blueprint(teams)
     app.register_blueprint(main)
     app.register_blueprint(errors)
 
