@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <article class="media content-section">
+    <div class="media-body">
+      <a href="{{ url_for('clubs.club', club_id=club.id) }}"><button class="btn btn-secondary">Back</button></a>
+      <h1 class="article-title">Add Player to Team</h1>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Email</th>
+            <th scope="col">Profile</th>
+            {% if admin_status == True %}
+              <th scope="col">Action</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for player in player_list %}
+            <tr>
+              <td>{{ player.member.first_name }}</td>
+              <td>{{ player.member.last_name }}</td>
+              <td>{{ player.member.email }}</td>
+              <td><a href="{{ url_for('users.user', user_id=player.member.id) }}">View Profile</a></td>
+              <td><a href="{{ url_for('teams.add_player_team', team_id=team.id, club_id=club.id, user_id=player.member.id) }}"><button class="btn btn-success">Add Player</button></a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </article>
+  </div>
+{% endblock %}

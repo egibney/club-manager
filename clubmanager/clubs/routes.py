@@ -162,10 +162,7 @@ def member_profile(club_id, user_id):
     '''Load the club, user and corresponding membership object'''
     club = Club.query.get_or_404(club_id)
     user = User.query.get_or_404(user_id)
-    club_teams = []
-    for t in user.teams:
-        if t.club.id == club_id:
-            club_teams.append(t)
+    club_teams = club.teams
     club_list = []
     for c in user.clubs:
         i = Club(id=c.club_id)

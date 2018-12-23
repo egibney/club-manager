@@ -27,9 +27,6 @@ class Membership(db.Model):
     is_member = db.Column(db.Boolean, unique=False, default=False)
     member = db.relationship("User", back_populates="clubs")
     club = db.relationship("Club", back_populates="members")
-    '''
-    
-    '''
 
     def __repr__(self):
         return f"Membership('{self.user_id}', '{self.club_id}', '{self.is_admin}', '{self.is_member}')"
@@ -37,8 +34,8 @@ class Membership(db.Model):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(20), unique=True, nullable=False)
-    last_name = db.Column(db.String(20), unique=True, nullable=False)
+    first_name = db.Column(db.String(20), nullable=False)
+    last_name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
@@ -61,6 +58,34 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User('{self.first_name}', '{self.last_name}', '{self.email}', '{self.image_file}')"
 
+    def user_is_member(club_id, players):
+        active_status = False
+        for p in players:
+            if p.member == current_user:
+                if p.is_member == True:
+                    active_status = True
+        return active_status
+
+    def user_is_admin(club_id, players):
+        admin_status = False
+        for p in players:
+            if p.member == current_user:
+                if p.is_admin == True:
+                    admin_status = True
+        return admin_status
+
+    def user_is_pending(club_id, club):
+        player_list = []
+        pending_status = False
+        for m in club.members:
+            p = User(id=m.user_id)
+            player_list.append(p)
+        if current_user in player_list:
+            pending_status = True
+        else:
+            pending_status = False
+        return pending_status
+
 class Club(db.Model):
     __tablename__ = 'club'
     id = db.Column(db.Integer, primary_key=True)
@@ -75,10 +100,10 @@ class Club(db.Model):
 class Team(db.Model):
     __tablename__ = 'team'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
-    team_members = db.relationship("TeamMembership", back_populates="team")
+    team_members = db.relationship("TeamMembership", back_populates="team", cascade="all, delete")
 
     def __repr__(self):
         return f"Team('{self.name}', '{self.date_created}', {self.club_id})"
