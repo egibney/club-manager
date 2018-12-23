@@ -19,13 +19,15 @@
         </thead>
         <tbody>
           {% for player in player_list %}
-            <tr>
-              <td>{{ player.member.first_name }}</td>
-              <td>{{ player.member.last_name }}</td>
-              <td>{{ player.member.email }}</td>
-              <td><a href="{{ url_for('users.user', user_id=player.member.id) }}">View Profile</a></td>
-              <td><a href="{{ url_for('teams.add_player_team', team_id=team.id, club_id=club.id, user_id=player.member.id) }}"><button class="btn btn-success">Add Player</button></a></td>
-            </tr>
+            {% if player.is_member == True %}
+              <tr>
+                <td>{{ player.member.first_name }}</td>
+                <td>{{ player.member.last_name }}</td>
+                <td>{{ player.member.email }}</td>
+                <td><a href="{{ url_for('users.user', user_id=player.member.id) }}">View Profile</a></td>
+                <td><a href="{{ url_for('teams.add_player_team', team_id=team.id, club_id=club.id, user_id=player.member.id) }}"><button class="btn btn-success">Add Player</button></a></td>
+              </tr>
+            {% endif %}
           {% endfor %}
         </tbody>
       </table>
